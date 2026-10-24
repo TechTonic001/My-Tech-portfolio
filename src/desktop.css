@@ -31,3 +31,24 @@ body {
   border: 0;
   text-align: left;
 }
+
+@keyframes desktop-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
+.desktop-icon-float {
+  animation: desktop-float 4.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .desktop-icon-float {
+    animation: none;
+  }
+}
