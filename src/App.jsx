@@ -164,12 +164,12 @@ function CvContent() {
         <p className="text-xs text-slate-400">Completed 2026</p>
       </section>
 
-      <section>
+      {/* <section>
         <SectionHeading icon={FileBadge}>Certifications & Training</SectionHeading>
         <p className="text-slate-400">
           Certification details have not been provided.
         </p>
-      </section>
+      </section> */}
 
       <section>
         <SectionHeading icon={Code2}>Technical Skills</SectionHeading>
