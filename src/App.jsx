@@ -407,6 +407,9 @@ function DraggableWindow({
         top: windowState.maximized ? '8px' : `${position.y}px`,
         right: windowState.maximized ? '8px' : 'auto',
         bottom: windowState.maximized ? '40px' : 'auto',
+        maxHeight: windowState.maximized
+          ? 'none'
+          : `calc(100vh - ${position.y + 48}px)`,
         zIndex: windowState.zIndex,
       }}
       onPointerDown={onFocus}
@@ -527,7 +530,7 @@ export default function App() {
         {
           id: appId,
           x: Math.min(32 + offset, Math.max(8, window.innerWidth - 300)),
-          y: 32 + offset,
+          y: 104 + offset,
           zIndex,
           minimized: false,
           maximized: false,
@@ -592,7 +595,7 @@ export default function App() {
   return (
     <main className="relative flex h-screen min-h-[320px] w-full flex-col overflow-hidden bg-[#008080] font-sans text-black">
       <div
-        className="grid flex-1 auto-rows-min grid-cols-2 content-start gap-x-2 gap-y-4 overflow-auto p-3 pb-10 sm:grid-cols-3 sm:gap-x-4 sm:gap-y-5 sm:p-5 md:grid-cols-4"
+        className="grid flex-1 auto-rows-min grid-cols-4 content-start gap-x-1 overflow-auto p-2 pb-10 sm:gap-x-4 sm:p-5"
         aria-label="Desktop applications"
         onClick={() => setStartMenuOpen(false)}
       >
