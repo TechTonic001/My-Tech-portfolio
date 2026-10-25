@@ -95,8 +95,6 @@ const SKILL_GROUPS = [
 
 const glassPanel =
   'border border-white/10 bg-black/40 shadow-2xl backdrop-blur-xl';
-const glassButton =
-  'rounded-lg border border-white/10 bg-white/5 transition-colors hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400';
 
 function SectionHeading({ icon: Icon, children }) {
   return (
@@ -398,6 +396,7 @@ function DraggableWindow({
         windowState.minimized ? 'hidden' : ''
       } ${active ? 'ring-1 ring-sky-400/30' : ''}`}
       style={{
+        width: windowState.maximized ? 'auto' : undefined,
         left: windowState.maximized ? '8px' : `${position.x}px`,
         top: windowState.maximized ? '8px' : `${position.y}px`,
         right: windowState.maximized ? '8px' : 'auto',
