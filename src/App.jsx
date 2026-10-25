@@ -79,17 +79,68 @@ const SKILL_GROUPS = [
   {
     title: 'Frontend',
     Icon: Monitor,
-    skills: ['React', 'Next.js', 'Angular'],
+    skills: [
+      'React.js',
+      'Next.js',
+      'Angular',
+      'JavaScript/TypeScript',
+      'HTML5',
+      'CSS3',
+      'Tailwind CSS',
+      'GraphQL',
+    ],
   },
   {
-    title: 'Backend & Data',
+    title: 'Backend',
     Icon: Code2,
-    skills: ['Node.js', 'Prisma ORM', 'PostgreSQL', 'GraphQL'],
+    skills: ['Node.js', 'Express.js', 'PHP'],
   },
   {
-    title: 'AI Tools',
+    title: 'Databases & ORMs',
+    Icon: FolderOpen,
+    skills: ['PostgreSQL', 'Prisma ORM', 'MongoDB', 'MySQL', 'Firebase'],
+  },
+  {
+    title: 'AI Integration & Tools',
     Icon: Settings,
-    skills: ['Claude API', 'CrewAI'],
+    skills: [
+      'Claude API',
+      'AI Agent Workflows',
+      'GitHub Copilot',
+      'Cursor AI',
+      'Supermaven',
+    ],
+  },
+  {
+    title: 'DevOps & Systems',
+    Icon: Monitor,
+    skills: [
+      'Vercel',
+      'Render',
+      'Git/GitHub',
+      'Postman',
+      'Linux (Ubuntu)',
+      'UML',
+      'Cisco Packet Tracer',
+    ],
+  },
+];
+
+const SOCIAL_LINKS = [
+  {
+    title: 'GitHub',
+    href: 'https://github.com/TechTonic001',
+    Icon: Code2,
+  },
+  {
+    title: 'Instagram',
+    href: 'https://www.instagram.com/techtonic01a/',
+    Icon: User,
+  },
+  {
+    title: 'LinkedIn',
+    href: 'https://www.linkedin.com/in/halleluyah-amoo-5aba97356',
+    Icon: BriefcaseBusiness,
   },
 ];
 
@@ -301,9 +352,7 @@ function SkillsContent() {
       {SKILL_GROUPS.map(({ title, Icon, skills }) => (
         <section
           key={title}
-          className={`rounded-xl border border-white/10 bg-white/[0.04] p-4 ${
-            title === 'AI Tools' ? 'sm:col-span-2' : ''
-          }`}
+          className="rounded-xl border border-white/10 bg-white/[0.04] p-4"
         >
           <h3 className="mb-3 flex items-center gap-2 border-b border-white/10 pb-2 font-semibold text-white">
             <Icon size={17} aria-hidden="true" />
@@ -673,6 +722,25 @@ export default function App() {
                 </button>
               );
             })}
+          </div>
+          <div className="mt-4 border-t border-white/10 pt-3">
+            <h3 className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+              Connect
+            </h3>
+            <div className="grid grid-cols-3 gap-2">
+              {SOCIAL_LINKS.map(({ title, href, Icon }) => (
+                <a
+                  key={title}
+                  href={href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-2 py-2 text-xs text-slate-200 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400"
+                >
+                  <Icon size={15} className="text-sky-300" aria-hidden="true" />
+                  {title}
+                </a>
+              ))}
+            </div>
           </div>
           <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-3">
             <span className="text-xs text-slate-400">Amoo Halleluyah Olamilekan</span>
