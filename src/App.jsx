@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import {
   Bot,
+  BatteryFull,
   BriefcaseBusiness,
   Camera,
   Code2,
@@ -16,6 +17,8 @@ import {
   Square,
   User,
   X,
+  Volume2,
+  Wifi,
 } from 'lucide-react';
 
 const APPS = [
@@ -859,7 +862,7 @@ export default function App() {
       {startMenuOpen && (
         <section
           aria-label="Start menu"
-          className={`absolute bottom-24 left-1/2 z-[10000] max-h-[calc(100vh-120px)] w-[min(380px,calc(100vw-24px))] -translate-x-1/2 overflow-y-auto rounded-2xl p-4 text-slate-100 ${glassPanel}`}
+          className={`absolute bottom-[88px] left-1/2 z-[10000] max-h-[calc(100vh-112px)] w-[min(380px,calc(100vw-24px))] -translate-x-1/2 overflow-y-auto rounded-2xl p-4 text-slate-100 ${glassPanel}`}
           onClick={(event) => event.stopPropagation()}
         >
           <div className="mb-4 flex items-center justify-between">
@@ -912,8 +915,8 @@ export default function App() {
         </section>
       )}
 
-      <footer className={`absolute bottom-3 left-3 right-3 z-[10001] flex h-[68px] items-center justify-center rounded-2xl px-3 ${glassPanel}`}>
-        <div className="absolute left-1/2 flex max-w-[calc(100%-100px)] -translate-x-1/2 items-center gap-1 overflow-x-auto sm:gap-2">
+      <footer className="absolute inset-x-0 bottom-0 z-[10001] flex h-[76px] w-full items-center border-t border-white/10 bg-black/40 px-2 shadow-2xl backdrop-blur-2xl">
+        <div className="absolute left-1/2 flex max-w-[calc(100%-190px)] -translate-x-1/2 items-center gap-1 overflow-x-auto sm:gap-2">
           <button
             type="button"
             aria-expanded={startMenuOpen}
@@ -961,8 +964,8 @@ export default function App() {
                   {!appWindow.minimized && (
                     <span
                       aria-hidden="true"
-                      className={`absolute bottom-0.5 h-1 w-1 rounded-full ${
-                        isPressed ? 'bg-sky-300' : 'bg-slate-500'
+                      className={`absolute bottom-0.5 h-1 rounded-full transition-all ${
+                        isPressed ? 'w-4 bg-sky-300' : 'w-2 bg-slate-400'
                       }`}
                     />
                   )}
@@ -971,12 +974,19 @@ export default function App() {
             })}
           </nav>
         </div>
-        <time className="absolute right-3 flex min-w-16 flex-col items-end text-right text-[11px] font-medium leading-tight text-slate-200 sm:right-5 sm:text-xs">
-          <span>{formatTime(time)}</span>
-          <span className="mt-1 text-[10px] text-slate-400 sm:text-[11px]">
-            {formatDate(time)}
-          </span>
-        </time>
+        <div className="absolute right-3 flex items-center gap-2 sm:right-5 sm:gap-3">
+          <div className="flex items-center gap-2 text-slate-300 sm:gap-3">
+            <Wifi size={15} aria-label="Wi-Fi connected" />
+            <Volume2 size={15} aria-label="Volume on" />
+            <BatteryFull size={17} aria-label="Battery full" />
+          </div>
+          <time className="flex min-w-16 flex-col items-end text-right text-[11px] font-medium leading-tight text-slate-200 sm:text-xs">
+            <span>{formatTime(time)}</span>
+            <span className="mt-1 text-[10px] text-slate-400 sm:text-[11px]">
+              {formatDate(time)}
+            </span>
+          </time>
+        </div>
       </footer>
     </main>
   );
