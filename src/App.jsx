@@ -795,13 +795,13 @@ export default function App() {
     <main
       className="relative flex h-screen min-h-[320px] w-full flex-col overflow-hidden font-sans text-slate-100"
       style={{
-    background: wallpaper.background,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
+        backgroundImage: wallpaper.background,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
       }}
     >
       <div
-        className="grid w-max flex-1 grid-flow-col grid-rows-6 content-start gap-x-4 gap-y-2 overflow-auto p-3 pb-24 sm:p-5"
+        className="grid w-max flex-1 grid-flow-col grid-rows-[repeat(6,min-content)] content-start gap-x-4 gap-y-2 overflow-auto p-3 pb-24 sm:p-5"
         aria-label="Desktop applications"
         onClick={() => setStartMenuOpen(false)}
       >
@@ -811,7 +811,7 @@ export default function App() {
             <button
               key={app.id}
               type="button"
-              className="group flex w-full max-w-24 flex-col items-center gap-1 justify-self-start rounded-xl border border-transparent px-2 py-2 text-center transition-colors hover:border-white/10 hover:bg-white/[0.06] focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400"
+              className="group flex w-full max-w-24 flex-col items-center gap-0 justify-self-start rounded-xl border border-transparent px-2 py-1 text-center transition-colors hover:border-white/10 hover:bg-white/[0.06] focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400"
               aria-label={`Open ${app.title}`}
               onClick={(event) => {
                 event.stopPropagation();
@@ -819,11 +819,11 @@ export default function App() {
               }}
             >
               <span
-                className="desktop-icon-float flex h-11 w-11 items-center justify-center"
+                className="desktop-icon-float flex h-9 w-9 items-center justify-center"
                 style={{ animationDelay: `${index * -0.83}s` }}
               >
                 <Icon
-                  size={36}
+                  size={30}
                   strokeWidth={1.7}
                   className={`${app.iconClass} drop-shadow-[1px_1px_0px_#000]`}
                   aria-hidden="true"
