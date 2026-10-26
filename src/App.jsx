@@ -179,6 +179,14 @@ function CvContent() {
           >
             GitHub: TechTonic001
           </a>
+          <a
+            className="underline"
+            href="https://www.linkedin.com/in/halleluyah-amoo-5aba97356"
+            target="_blank"
+            rel="noreferrer"
+          >
+            LinkedIn
+          </a>
         </div>
       </header>
 
@@ -261,6 +269,14 @@ function ResumeContent() {
             rel="noreferrer"
           >
             GitHub
+          </a>
+          <a
+            className="underline"
+            href="https://www.linkedin.com/in/halleluyah-amoo-5aba97356"
+            target="_blank"
+            rel="noreferrer"
+          >
+            LinkedIn
           </a>
         </p>
       </header>
