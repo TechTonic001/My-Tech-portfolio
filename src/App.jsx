@@ -1,13 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
 import {
+  Bot,
   BriefcaseBusiness,
+  Camera,
   Code2,
   FileBadge,
   FileText,
   FolderOpen,
   GraduationCap,
+  MapPin,
   Minus,
   Monitor,
+  Palette,
   Settings,
   Square,
   User,
@@ -15,6 +19,38 @@ import {
 } from 'lucide-react';
 
 const APPS = [
+  {
+    id: 'profile',
+    title: 'Profile',
+    fileName: 'Profile.exe',
+    Icon: User,
+    iconClass: 'text-sky-200',
+    smallIconClass: 'text-sky-300',
+  },
+  {
+    id: 'settings',
+    title: 'Settings',
+    fileName: 'Settings.exe',
+    Icon: Palette,
+    iconClass: 'text-violet-200',
+    smallIconClass: 'text-violet-300',
+  },
+  {
+    id: 'skills',
+    title: 'Skills',
+    fileName: 'Skills.dll',
+    Icon: Settings,
+    iconClass: 'text-blue-300',
+    smallIconClass: 'text-blue-300',
+  },
+  {
+    id: 'projects',
+    title: 'Projects',
+    fileName: 'Projects.exe',
+    Icon: Monitor,
+    iconClass: 'text-sky-200',
+    smallIconClass: 'text-sky-300',
+  },
   {
     id: 'cv',
     title: 'CV',
@@ -31,21 +67,32 @@ const APPS = [
     iconClass: 'text-blue-300',
     smallIconClass: 'text-blue-300',
   },
+];
+
+const WALLPAPERS = [
   {
-    id: 'projects',
-    title: 'Projects',
-    fileName: 'Projects.exe',
-    Icon: Monitor,
-    iconClass: 'text-sky-200',
-    smallIconClass: 'text-sky-300',
+    id: 'bloom',
+    name: 'Bloom',
+    background:
+      'radial-gradient(ellipse at 72% 42%, rgba(74, 144, 255, 0.85), transparent 22%), radial-gradient(ellipse at 60% 55%, rgba(130, 62, 210, 0.78), transparent 34%), radial-gradient(ellipse at 40% 45%, rgba(20, 88, 190, 0.9), transparent 45%), linear-gradient(135deg, #071027 0%, #101b49 48%, #080c24 100%)',
   },
   {
-    id: 'skills',
-    title: 'Skills',
-    fileName: 'Skills.dll',
-    Icon: Settings,
-    iconClass: 'text-violet-200',
-    smallIconClass: 'text-violet-300',
+    id: 'aurora',
+    name: 'Aurora',
+    background:
+      'radial-gradient(ellipse at 20% 90%, rgba(0, 220, 170, 0.68), transparent 32%), radial-gradient(ellipse at 70% 30%, rgba(80, 90, 245, 0.72), transparent 40%), linear-gradient(145deg, #081224 0%, #101b3c 52%, #080d19 100%)',
+  },
+  {
+    id: 'sunset',
+    name: 'Sunset',
+    background:
+      'radial-gradient(ellipse at 70% 20%, rgba(255, 153, 102, 0.78), transparent 30%), radial-gradient(ellipse at 30% 80%, rgba(152, 45, 155, 0.75), transparent 40%), linear-gradient(140deg, #1d1535 0%, #512b57 50%, #10152b 100%)',
+  },
+  {
+    id: 'ocean',
+    name: 'Deep Ocean',
+    background:
+      'radial-gradient(ellipse at 25% 25%, rgba(36, 173, 210, 0.65), transparent 35%), radial-gradient(ellipse at 80% 80%, rgba(23, 83, 180, 0.8), transparent 42%), linear-gradient(135deg, #061a2b 0%, #092748 52%, #081126 100%)',
   },
 ];
 
@@ -79,16 +126,7 @@ const SKILL_GROUPS = [
   {
     title: 'Frontend',
     Icon: Monitor,
-    skills: [
-      'React.js',
-      'Next.js',
-      'Angular',
-      'JavaScript/TypeScript',
-      'HTML5',
-      'CSS3',
-      'Tailwind CSS',
-      'GraphQL',
-    ],
+    skills: ['React.js', 'Next.js', 'Angular', 'GraphQL', 'Tailwind CSS'],
   },
   {
     title: 'Backend',
@@ -96,33 +134,14 @@ const SKILL_GROUPS = [
     skills: ['Node.js', 'Express.js', 'PHP'],
   },
   {
-    title: 'Databases & ORMs',
+    title: 'Databases',
     Icon: FolderOpen,
-    skills: ['PostgreSQL', 'Prisma ORM', 'MongoDB', 'MySQL', 'Firebase'],
+    skills: ['PostgreSQL', 'Prisma ORM', 'MongoDB'],
   },
   {
-    title: 'AI Integration & Tools',
-    Icon: Settings,
-    skills: [
-      'Claude API',
-      'AI Agent Workflows',
-      'GitHub Copilot',
-      'Cursor AI',
-      'Supermaven',
-    ],
-  },
-  {
-    title: 'DevOps & Systems',
-    Icon: Monitor,
-    skills: [
-      'Vercel',
-      'Render',
-      'Git/GitHub',
-      'Postman',
-      'Linux (Ubuntu)',
-      'UML',
-      'Cisco Packet Tracer',
-    ],
+    title: 'AI',
+    Icon: Bot,
+    skills: ['Claude API', 'AI Agents', 'Supermaven'],
   },
 ];
 
@@ -135,7 +154,7 @@ const SOCIAL_LINKS = [
   {
     title: 'Instagram',
     href: 'https://www.instagram.com/techtonic01a/',
-    Icon: User,
+    Icon: Camera,
   },
   {
     title: 'LinkedIn',
@@ -145,7 +164,7 @@ const SOCIAL_LINKS = [
 ];
 
 const glassPanel =
-  'border border-white/10 bg-black/40 shadow-2xl backdrop-blur-xl';
+  'border border-white/10 bg-black/40 shadow-2xl backdrop-blur-2xl';
 
 function SectionHeading({ icon: Icon, children }) {
   return (
@@ -153,6 +172,104 @@ function SectionHeading({ icon: Icon, children }) {
       <Icon size={15} aria-hidden="true" />
       {children}
     </h3>
+  );
+}
+
+function ProfileContent() {
+  return (
+    <article className="mx-auto max-w-3xl space-y-6 p-5 text-slate-200 sm:p-8">
+      <header className="flex flex-col gap-4 sm:flex-row sm:items-center">
+        <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-3xl border border-sky-300/20 bg-sky-400/10 text-3xl font-semibold text-sky-200">
+          AH
+        </div>
+        <div>
+          <p className="mb-1 text-xs font-semibold uppercase tracking-[0.18em] text-sky-300">
+            Personal profile
+          </p>
+          <h2 className="text-2xl font-bold text-white">
+            Amoo Halleluyah Olamilekan
+          </h2>
+          <p className="mt-1 text-slate-300">
+            Full-Stack Software Engineer &amp; AI Agent Developer
+          </p>
+        </div>
+      </header>
+
+      <section className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+        <SectionHeading icon={MapPin}>Location</SectionHeading>
+        <p>Ogbomoso, Oyo, Nigeria</p>
+      </section>
+
+      <section className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+        <SectionHeading icon={User}>About me</SectionHeading>
+        <p className="leading-relaxed text-slate-300">
+          Passionate about solving complex, real-world problems through robust
+          system architectures and modern AI developer tools.
+        </p>
+      </section>
+
+      <section>
+        <SectionHeading icon={BriefcaseBusiness}>Find me online</SectionHeading>
+        <div className="flex flex-wrap gap-2">
+          {SOCIAL_LINKS.map(({ title, href, Icon }) => (
+            <a
+              key={title}
+              href={href}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-slate-200 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400"
+            >
+              <Icon size={16} className="text-sky-300" aria-hidden="true" />
+              {title}
+            </a>
+          ))}
+        </div>
+      </section>
+    </article>
+  );
+}
+
+function SettingsContent({ wallpaperId, onSelectWallpaper }) {
+  return (
+    <div className="space-y-5 p-5 sm:p-6">
+      <div>
+        <h2 className="text-lg font-semibold text-white">Personalization</h2>
+        <p className="mt-1 text-sm text-slate-400">
+          Choose a desktop background. Your selection updates instantly.
+        </p>
+      </div>
+      <section>
+        <SectionHeading icon={Palette}>Choose your wallpaper</SectionHeading>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {WALLPAPERS.map((wallpaper) => {
+            const selected = wallpaper.id === wallpaperId;
+            return (
+              <button
+                key={wallpaper.id}
+                type="button"
+                aria-label={`Set ${wallpaper.name} wallpaper`}
+                aria-pressed={selected}
+                onClick={() => onSelectWallpaper(wallpaper.id)}
+                className={`group overflow-hidden rounded-xl border text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400 ${
+                  selected
+                    ? 'border-sky-300 ring-2 ring-sky-400/40'
+                    : 'border-white/10 hover:border-white/30'
+                }`}
+              >
+                <span
+                  className="block aspect-[4/3] w-full transition-transform duration-300 group-hover:scale-105"
+                  style={{ background: wallpaper.background }}
+                />
+                <span className="block bg-black/30 px-3 py-2 text-xs font-medium text-slate-200">
+                  {wallpaper.name}
+                  {selected ? ' · Current' : ''}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </section>
+    </div>
   );
 }
 
@@ -390,8 +507,17 @@ function SkillsContent() {
   );
 }
 
-function AppContent({ appId }) {
+function AppContent({ appId, wallpaperId, onSelectWallpaper }) {
   switch (appId) {
+    case 'profile':
+      return <ProfileContent />;
+    case 'settings':
+      return (
+        <SettingsContent
+          wallpaperId={wallpaperId}
+          onSelectWallpaper={onSelectWallpaper}
+        />
+      );
     case 'cv':
       return <CvContent />;
     case 'resume':
@@ -413,6 +539,8 @@ function DraggableWindow({
   onClose,
   onMinimize,
   onToggleMaximize,
+  wallpaperId,
+  onSelectWallpaper,
 }) {
   const [position, setPosition] = useState({
     x: windowState.x,
@@ -465,7 +593,7 @@ function DraggableWindow({
         left: windowState.maximized ? '8px' : `${position.x}px`,
         top: windowState.maximized ? '8px' : `${position.y}px`,
         right: windowState.maximized ? '8px' : 'auto',
-        bottom: windowState.maximized ? '40px' : 'auto',
+        bottom: windowState.maximized ? '88px' : 'auto',
         maxHeight: windowState.maximized
           ? 'none'
           : `calc(100vh - ${position.y + 48}px)`,
@@ -527,7 +655,11 @@ function DraggableWindow({
       <div
         className="min-h-0 flex-1 overflow-auto bg-transparent text-slate-100"
       >
-        <AppContent appId={app.id} />
+        <AppContent
+          appId={app.id}
+          wallpaperId={wallpaperId}
+          onSelectWallpaper={onSelectWallpaper}
+        />
       </div>
       <footer className="flex items-center justify-between border-t border-white/10 px-4 py-2 text-[11px] text-slate-400">
         <span>{app.fileName}</span>
@@ -544,12 +676,22 @@ function formatTime(date) {
   });
 }
 
+function formatDate(date) {
+  return date.toLocaleDateString([], {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+  });
+}
+
 export default function App() {
   const [windows, setWindows] = useState([]);
   const [activeWindowId, setActiveWindowId] = useState(null);
   const [startMenuOpen, setStartMenuOpen] = useState(false);
   const [time, setTime] = useState(() => new Date());
+  const [wallpaperId, setWallpaperId] = useState(WALLPAPERS[0].id);
   const nextZIndex = useRef(10);
+  const wallpaper = WALLPAPERS.find((item) => item.id === wallpaperId) ?? WALLPAPERS[0];
 
   useEffect(() => {
     const timer = window.setInterval(() => setTime(new Date()), 1000);
@@ -581,13 +723,13 @@ export default function App() {
         );
       }
 
-      const offset = current.length * 28;
+      const offset = current.length * 24;
       return [
         ...current,
         {
           id: appId,
-          x: Math.min(32 + offset, Math.max(8, window.innerWidth - 300)),
-          y: 104 + offset,
+          x: Math.min(140 + offset, Math.max(8, window.innerWidth - 300)),
+          y: 32 + offset,
           zIndex,
           minimized: false,
           maximized: false,
@@ -653,12 +795,13 @@ export default function App() {
     <main
       className="relative flex h-screen min-h-[320px] w-full flex-col overflow-hidden font-sans text-slate-100"
       style={{
-        background:
-          'radial-gradient(ellipse at 50% 0%, rgba(37, 99, 235, 0.24), transparent 48%), linear-gradient(145deg, #111827 0%, #080b12 52%, #111827 100%)',
+    background: wallpaper.background,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
       }}
     >
       <div
-        className="grid flex-1 auto-rows-min grid-cols-4 content-start gap-x-1 overflow-auto p-2 pb-24 sm:gap-x-4 sm:p-6"
+        className="grid w-max flex-1 grid-flow-col grid-rows-6 content-start gap-x-4 gap-y-2 overflow-auto p-3 pb-24 sm:p-5"
         aria-label="Desktop applications"
         onClick={() => setStartMenuOpen(false)}
       >
@@ -707,6 +850,8 @@ export default function App() {
             onClose={() => closeApp(appWindow.id)}
             onMinimize={() => minimizeApp(appWindow.id)}
             onToggleMaximize={() => toggleMaximize(appWindow.id)}
+            wallpaperId={wallpaperId}
+            onSelectWallpaper={setWallpaperId}
           />
         );
       })}
@@ -714,7 +859,7 @@ export default function App() {
       {startMenuOpen && (
         <section
           aria-label="Start menu"
-          className={`absolute bottom-24 left-1/2 z-[10000] w-[min(380px,calc(100vw-24px))] -translate-x-1/2 rounded-2xl p-4 text-slate-100 ${glassPanel}`}
+          className={`absolute bottom-24 left-1/2 z-[10000] max-h-[calc(100vh-120px)] w-[min(380px,calc(100vw-24px))] -translate-x-1/2 overflow-y-auto rounded-2xl p-4 text-slate-100 ${glassPanel}`}
           onClick={(event) => event.stopPropagation()}
         >
           <div className="mb-4 flex items-center justify-between">
@@ -767,13 +912,14 @@ export default function App() {
         </section>
       )}
 
-      <footer className={`absolute bottom-3 left-1/2 z-[10001] flex h-[68px] max-w-[calc(100vw-20px)] -translate-x-1/2 items-center gap-2 rounded-2xl px-3 ${glassPanel}`}>
+      <footer className={`absolute bottom-3 left-3 right-3 z-[10001] flex h-[68px] items-center justify-center rounded-2xl px-3 ${glassPanel}`}>
+        <div className="absolute left-1/2 flex max-w-[calc(100%-100px)] -translate-x-1/2 items-center gap-1 overflow-x-auto sm:gap-2">
           <button
             type="button"
             aria-expanded={startMenuOpen}
             aria-label="Start"
             title="Start"
-            className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400 ${
+            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400 sm:h-12 sm:w-12 ${
               startMenuOpen ? 'bg-sky-400/20' : 'hover:bg-white/10'
             }`}
             onClick={() => setStartMenuOpen((open) => !open)}
@@ -803,7 +949,7 @@ export default function App() {
                   aria-pressed={isPressed}
                   title={app.title}
                   onClick={() => activateTaskbarApp(app.id)}
-                  className={`relative flex h-12 w-12 shrink-0 items-center justify-center rounded-xl transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400 ${
+                  className={`relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400 sm:h-12 sm:w-12 ${
                     isPressed ? 'bg-sky-400/20' : 'hover:bg-white/10'
                   }`}
                 >
@@ -824,10 +970,14 @@ export default function App() {
               );
             })}
           </nav>
+        </div>
+        <time className="absolute right-3 flex min-w-16 flex-col items-end text-right text-[11px] font-medium leading-tight text-slate-200 sm:right-5 sm:text-xs">
+          <span>{formatTime(time)}</span>
+          <span className="mt-1 text-[10px] text-slate-400 sm:text-[11px]">
+            {formatDate(time)}
+          </span>
+        </time>
       </footer>
-      <time className={`absolute bottom-5 right-4 hidden rounded-xl px-3 py-2 text-xs font-medium text-slate-200 sm:block ${glassPanel}`}>
-        {formatTime(time)}
-      </time>
     </main>
   );
 }
