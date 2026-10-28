@@ -5,6 +5,7 @@ import {
   BriefcaseBusiness,
   Camera,
   Code2,
+  ExternalLink,
   FileBadge,
   FileText,
   FolderOpen,
@@ -13,6 +14,8 @@ import {
   Minus,
   Monitor,
   Palette,
+  Power,
+  Search,
   Settings,
   Square,
   User,
@@ -105,23 +108,27 @@ const PROJECTS = [
     description:
       'Automated rent-tracking platform with Paystack payments and Nodemailer notifications.',
     stack: 'Payments · Email',
+    href: 'https://pro-tech-one.vercel.app/',
   },
   {
-    name: 'Finance Management App',
+    name: 'Finance App',
     description:
       'Full-stack application for tracking expenses and analyzing financial data.',
     stack: 'React · Node.js · Prisma · PostgreSQL',
+    href: 'https://finance-budget-red.vercel.app/',
   },
   {
-    name: 'AI Twitter Automation',
+    name: 'Twitter Automation Tool',
     description:
       'Automated content-generation tool powered by Node.js and the Claude API.',
     stack: 'Node.js · Claude API',
+    href: 'https://x-automation-ruby.vercel.app/',
   },
   {
     name: 'Tech Fit',
     description: 'Responsive Angular web app for a fitness platform.',
     stack: 'Angular',
+    href: 'https://form-fit-one.vercel.app/',
   },
 ];
 
@@ -460,24 +467,31 @@ function ResumeContent() {
 function ProjectsContent() {
   return (
     <div className="grid gap-3 p-3 font-sans sm:grid-cols-2">
-      {PROJECTS.map(({ name, description, stack }) => (
+      {PROJECTS.map(({ name, description, stack, href }) => (
         <article
           key={name}
-          className="rounded-xl border border-white/10 bg-white/[0.04] p-4 transition-colors hover:bg-white/[0.07]"
+          className="flex flex-col rounded-xl border border-white/10 bg-white/[0.04] p-4 transition-colors hover:bg-white/[0.07]"
         >
           <h3 className="flex items-center gap-2 font-semibold text-white">
             <FolderOpen size={16} aria-hidden="true" />
             {name}
           </h3>
-          <p className="mt-2 text-sm leading-relaxed text-slate-300">{description}</p>
+          <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-300">{description}</p>
           <p className="mt-3 border-t border-white/10 pt-2 text-xs text-slate-400">
             {stack}
           </p>
+          <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Open ${name} live demo in a new tab`}
+            className="mt-3 inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-sky-300/30 bg-sky-400/15 px-4 py-2 text-sm font-semibold text-sky-100 transition-colors hover:border-sky-200/50 hover:bg-sky-400/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-300"
+          >
+            Live Demo
+            <ExternalLink size={15} aria-hidden="true" />
+          </a>
         </article>
       ))}
-      <p className="text-xs text-slate-500 sm:col-span-2">
-        Project descriptions are shown here; deployment links were not supplied.
-      </p>
     </div>
   );
 }
@@ -691,10 +705,30 @@ export default function App() {
   const [windows, setWindows] = useState([]);
   const [activeWindowId, setActiveWindowId] = useState(null);
   const [startMenuOpen, setStartMenuOpen] = useState(false);
+  const [startSearch, setStartSearch] = useState('');
   const [time, setTime] = useState(() => new Date());
   const [wallpaperId, setWallpaperId] = useState(WALLPAPERS[0].id);
   const nextZIndex = useRef(10);
   const wallpaper = WALLPAPERS.find((item) => item.id === wallpaperId) ?? WALLPAPERS[0];
+  const searchTerm = startSearch.trim().toLowerCase();
+  const filteredApps = APPS.filter((app) =>
+    app.title.toLowerCase().includes(searchTerm),
+  );
+  const filteredSocialLinks = SOCIAL_LINKS.filter((link) =>
+    link.title.toLowerCase().includes(searchTerm),
+  );
+  const filteredRecentFiles = [
+    { title: 'CV.pdf', detail: 'Education and experience', appId: 'cv' },
+    {
+      title: 'resume_update.docx',
+      detail: 'One-page professional summary',
+      appId: 'resume',
+    },
+  ].filter(
+    (file) =>
+      file.title.toLowerCase().includes(searchTerm) ||
+      file.detail.toLowerCase().includes(searchTerm),
+  );
 
   useEffect(() => {
     const timer = window.setInterval(() => setTime(new Date()), 1000);
@@ -862,56 +896,126 @@ export default function App() {
       {startMenuOpen && (
         <section
           aria-label="Start menu"
-          className={`absolute bottom-[88px] left-1/2 z-[10000] max-h-[calc(100vh-112px)] w-[min(380px,calc(100vw-24px))] -translate-x-1/2 overflow-y-auto rounded-2xl p-4 text-slate-100 ${glassPanel}`}
+          className={`absolute bottom-[88px] left-1/2 z-[10000] max-h-[calc(100vh-112px)] w-[min(520px,calc(100vw-24px))] -translate-x-1/2 overflow-y-auto rounded-2xl p-5 text-slate-100 ${glassPanel}`}
           onClick={(event) => event.stopPropagation()}
         >
-          <div className="mb-4 flex items-center justify-between">
+          <label className="mb-5 flex h-10 items-center gap-3 rounded-lg border border-white/15 bg-black/30 px-3 text-slate-300 shadow-inner focus-within:border-sky-300/60">
+            <Search size={16} aria-hidden="true" />
+            <input
+              type="search"
+              value={startSearch}
+              onChange={(event) => setStartSearch(event.target.value)}
+              placeholder="Search for apps, settings, and documents"
+              aria-label="Search for apps, settings, and documents"
+              className="min-w-0 flex-1 bg-transparent text-sm text-white outline-none placeholder:text-slate-400"
+            />
+          </label>
+
+          <div className="mb-3 flex items-center justify-between">
             <h2 className="text-sm font-semibold tracking-wide text-white">Pinned</h2>
-            <span className="text-xs text-slate-400">Windows 11 Pro</span>
+            <span className="rounded-md border border-white/10 bg-white/[0.06] px-2 py-1 text-xs text-slate-300">
+              All apps <span aria-hidden="true">›</span>
+            </span>
           </div>
-          <div className="grid grid-cols-2 gap-2">
-            {APPS.map((app) => {
+          <div className="grid grid-cols-3 gap-1 sm:grid-cols-5">
+            {filteredApps.map((app) => {
               const Icon = app.Icon;
               return (
                 <button
                   key={`start-${app.id}`}
                   type="button"
-                  className="flex items-center gap-3 rounded-xl p-3 text-left transition-colors hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400"
+                  className="flex min-h-[88px] flex-col items-center justify-center gap-2 rounded-xl p-2 text-center transition-colors hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400"
                   onClick={() => openApp(app.id)}
                 >
-                  <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/5">
-                    <Icon size={18} className={app.smallIconClass} aria-hidden="true" />
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/[0.06]">
+                    <Icon size={20} className={app.smallIconClass} aria-hidden="true" />
                   </span>
-                  <span className="text-sm font-medium text-slate-200">{app.title}</span>
+                  <span className="text-xs font-medium text-slate-200">{app.title}</span>
                 </button>
               );
             })}
+            {filteredSocialLinks.map(({ title, href, Icon }) => (
+              <a
+                key={`start-${title}`}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex min-h-[88px] flex-col items-center justify-center gap-2 rounded-xl p-2 text-center transition-colors hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400"
+              >
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/[0.06]">
+                  <Icon size={20} className="text-sky-300" aria-hidden="true" />
+                </span>
+                <span className="text-xs font-medium text-slate-200">{title}</span>
+              </a>
+            ))}
+            {filteredApps.length === 0 && filteredSocialLinks.length === 0 && (
+              <p className="col-span-full py-4 text-center text-sm text-slate-400">
+                No pinned apps or links found.
+              </p>
+            )}
           </div>
-          <div className="mt-4 border-t border-white/10 pt-3">
-            <h3 className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
-              Connect
-            </h3>
-            <div className="grid grid-cols-3 gap-2">
-              {SOCIAL_LINKS.map(({ title, href, Icon }) => (
-                <a
-                  key={title}
-                  href={href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-2 py-2 text-xs text-slate-200 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400"
-                >
-                  <Icon size={15} className="text-sky-300" aria-hidden="true" />
-                  {title}
-                </a>
-              ))}
+
+          <section className="mt-4 border-t border-white/10 pt-4">
+            <div className="mb-2 flex items-center justify-between">
+              <h3 className="text-sm font-semibold tracking-wide text-white">
+                Recommended
+              </h3>
+              <span className="rounded-md border border-white/10 bg-white/[0.06] px-2 py-1 text-xs text-slate-300">
+                More <span aria-hidden="true">›</span>
+              </span>
             </div>
-          </div>
-          <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-3">
-            <span className="text-xs text-slate-400">Amoo Halleluyah Olamilekan</span>
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-sky-500/20 text-xs font-semibold text-sky-200">
-              AH
-            </span>
-          </div>
+            <div className="grid gap-1 sm:grid-cols-2">
+              {filteredRecentFiles.map((file) => (
+                <button
+                  key={file.title}
+                  type="button"
+                  onClick={() => openApp(file.appId)}
+                  className="flex min-w-0 items-center gap-3 rounded-lg px-2 py-2 text-left transition-colors hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400"
+                >
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/[0.06]">
+                    <FileText size={17} className="text-sky-300" aria-hidden="true" />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block truncate text-xs font-medium text-slate-200">
+                      {file.title}
+                    </span>
+                    <span className="mt-1 block truncate text-[11px] text-slate-400">
+                      {file.detail}
+                    </span>
+                  </span>
+                </button>
+              ))}
+              {filteredRecentFiles.length === 0 && (
+                <p className="col-span-full py-3 text-center text-sm text-slate-400">
+                  No recommended files found.
+                </p>
+              )}
+            </div>
+          </section>
+
+          <footer className="-mx-5 -mb-5 mt-4 flex items-center justify-between border-t border-white/10 bg-black/20 px-5 py-3">
+            <div className="flex min-w-0 items-center gap-3">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-sky-200/20 bg-sky-500/20 text-xs font-semibold text-sky-100">
+                AH
+              </span>
+              <span className="truncate text-sm font-medium text-slate-100">
+                Amoo Halleluyah
+              </span>
+            </div>
+            <button
+              type="button"
+              aria-label="Power"
+              title="Power"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-slate-300 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400"
+              onClick={() => {
+                setWindows([]);
+                setActiveWindowId(null);
+                setStartMenuOpen(false);
+              }}
+            >
+              <Power size={18} aria-hidden="true" />
+            </button>
+          </footer>
         </section>
       )}
 
