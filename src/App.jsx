@@ -5,6 +5,7 @@ import {
   BriefcaseBusiness,
   Camera,
   Code2,
+  Download,
   ExternalLink,
   FileBadge,
   FileText,
@@ -176,6 +177,126 @@ const SOCIAL_LINKS = [
 const glassPanel =
   'border border-white/10 bg-black/40 shadow-2xl backdrop-blur-2xl';
 
+function createPdfDataUri(lines) {
+  const normalizeLine = (line) =>
+    line
+      .normalize('NFKD')
+      .replace(/[^\x20-\x7E]/g, '')
+      .replaceAll('\\', '\\\\')
+      .replaceAll('(', '\\(')
+      .replaceAll(')', '\\)');
+  const wrappedLines = lines.flatMap((line) => {
+    const words = line.split(/\s+/);
+    const result = [];
+    let currentLine = '';
+    words.forEach((word) => {
+      const nextLine = currentLine ? `${currentLine} ${word}` : word;
+      if (nextLine.length > 88 && currentLine) {
+        result.push(currentLine);
+        currentLine = word;
+      } else {
+        currentLine = nextLine;
+      }
+    });
+    if (currentLine) result.push(currentLine);
+    return result;
+  });
+  const [title, ...body] = wrappedLines;
+  const content = [
+    'BT',
+    '/F1 16 Tf',
+    '50 748 Td',
+    `(${normalizeLine(title)}) Tj`,
+    '/F1 10 Tf',
+    '0 -26 Td',
+    ...body.map((line) => `(${normalizeLine(line)}) Tj 0 -14 Td`),
+    'ET',
+  ].join('\n');
+  const objects = [
+    '<< /Type /Catalog /Pages 2 0 R >>',
+    '<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
+    '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>',
+    '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>',
+    `<< /Length ${content.length} >>\nstream\n${content}\nendstream`,
+  ];
+  let pdf = '%PDF-1.4\n';
+  const offsets = [0];
+  objects.forEach((object, index) => {
+    offsets.push(pdf.length);
+    pdf += `${index + 1} 0 obj\n${object}\nendobj\n`;
+  });
+  const xrefOffset = pdf.length;
+  pdf += `xref\n0 ${offsets.length}\n0000000000 65535 f \n`;
+  offsets.slice(1).forEach((offset) => {
+    pdf += `${String(offset).padStart(10, '0')} 00000 n \n`;
+  });
+  pdf += `trailer\n<< /Size ${offsets.length} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`;
+  return `data:application/pdf;base64,${btoa(pdf)}`;
+}
+
+const CV_PDF = createPdfDataUri([
+  'Amoo Halleluyah Olamilekan',
+  'Full-Stack Software Engineer & AI Agent Developer',
+  'Ogbomoso, Oyo, Nigeria',
+  '',
+  'PROFESSIONAL PROFILE',
+  'Passionate about solving complex, real-world problems through robust system architectures and modern AI developer tools.',
+  '',
+  'EXPERIENCE',
+  'Software Engineering Intern (SIWES) | Ennovate Lab | Ogbomoso',
+  'October 2025 - December 2025',
+  'Collaborated on full-stack software development during an industrial training placement.',
+  'Contributed to debugging tasks and software optimization.',
+  '',
+  'EDUCATION',
+  'National Diploma (ND), Computer Science',
+  'SQI College of ICT | Ogbomoso | Completed 2026',
+  '',
+  'TECHNICAL SKILLS',
+  'Frontend: React.js, Next.js, Angular, GraphQL, Tailwind CSS',
+  'Backend: Node.js, Express.js, PHP',
+  'Databases: PostgreSQL, Prisma, MongoDB',
+  'AI: Claude API, AI Agents, Supermaven',
+  '',
+  'SELECTED PROJECTS',
+  'ProTech | Finance App | Twitter Automation Tool | Tech Fit',
+]);
+
+const RESUME_PDF = createPdfDataUri([
+  'Amoo Halleluyah Olamilekan',
+  'Full-Stack Software Engineer & AI Agent Developer',
+  'Ogbomoso, Oyo, Nigeria',
+  '',
+  'PROFILE',
+  'Engineer passionate about solving real-world problems with robust software systems and modern AI developer tools.',
+  '',
+  'EXPERIENCE',
+  'Software Engineering Intern (SIWES) | Ennovate Lab | 2025',
+  'Contributed to full-stack development, debugging, and software optimization.',
+  '',
+  'EDUCATION',
+  'National Diploma in Computer Science | SQI College of ICT | 2026',
+  '',
+  'SKILLS',
+  'React.js, Next.js, Angular, GraphQL, Tailwind CSS, Node.js, Express.js, PHP, PostgreSQL, Prisma, MongoDB, Claude API, AI Agents, Supermaven',
+  '',
+  'PROJECTS',
+  'ProTech | Finance App | Twitter Automation Tool | Tech Fit',
+]);
+
+function DocumentDownload({ href, filename, children }) {
+  return (
+    <a
+      href={href}
+      download={filename}
+      className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-sky-300/40 bg-sky-400/20 px-4 py-2 text-sm font-semibold text-sky-100 shadow-lg shadow-sky-950/20 transition-colors hover:border-sky-200/60 hover:bg-sky-400/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-300"
+    >
+      <Download size={16} aria-hidden="true" />
+      {children}
+    </a>
+  );
+}
+
 function SectionHeading({ icon: Icon, children }) {
   return (
     <h3 className="mb-2 flex items-center gap-2 border-b border-white/10 pb-2 text-xs font-semibold uppercase tracking-[0.16em] text-sky-300">
@@ -286,11 +407,18 @@ function SettingsContent({ wallpaperId, onSelectWallpaper }) {
 function CvContent() {
   return (
     <article className="mx-auto max-w-3xl space-y-5 p-4 font-sans text-sm leading-relaxed text-slate-200 sm:p-6">
+      <div className="sticky top-0 z-10 -mx-4 -mt-4 flex justify-end border-b border-white/10 bg-slate-950/75 p-3 backdrop-blur-xl sm:-mx-6 sm:-mt-6">
+        <DocumentDownload href={CV_PDF} filename="Amoo-Halleluyah-CV.pdf">
+          Download CV (PDF)
+        </DocumentDownload>
+      </div>
       <header className="border-b border-sky-400/30 pb-3">
         <h2 className="text-2xl font-bold text-white">
           Amoo Halleluyah Olamilekan
         </h2>
-        <p className="font-semibold">Full-Stack Software Engineer</p>
+        <p className="font-semibold">
+          Full-Stack Software Engineer &amp; AI Agent Developer
+        </p>
         <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs">
           <a className="underline" href="mailto:amoohalleluyah1@gmail.com">
             amoohalleluyah1@gmail.com
@@ -360,14 +488,17 @@ function CvContent() {
       <section>
         <SectionHeading icon={Code2}>Technical Skills</SectionHeading>
         <p>
-          <strong>Frontend:</strong> React, Next.js, Angular
+          <strong>Frontend:</strong> React.js, Next.js, Angular, GraphQL,
+          Tailwind CSS
         </p>
         <p>
-          <strong>Backend & data:</strong> Node.js, Prisma ORM, PostgreSQL,
-          GraphQL
+          <strong>Backend:</strong> Node.js, Express.js, PHP
         </p>
         <p>
-          <strong>AI tools:</strong> Claude API, CrewAI
+          <strong>Databases:</strong> PostgreSQL, Prisma, MongoDB
+        </p>
+        <p>
+          <strong>AI:</strong> Claude API, AI Agents, Supermaven
         </p>
       </section>
     </article>
@@ -377,11 +508,21 @@ function CvContent() {
 function ResumeContent() {
   return (
     <article className="mx-auto max-w-2xl space-y-4 p-4 font-sans text-[13px] leading-snug text-slate-200 sm:p-6">
+      <div className="sticky top-0 z-10 -mx-4 -mt-4 flex justify-end border-b border-white/10 bg-slate-950/75 p-3 backdrop-blur-xl sm:-mx-6 sm:-mt-6">
+        <DocumentDownload
+          href={RESUME_PDF}
+          filename="Amoo-Halleluyah-Resume.pdf"
+        >
+          Download Resume (PDF)
+        </DocumentDownload>
+      </div>
       <header className="border-b border-sky-400/30 pb-3">
         <h2 className="text-2xl font-bold text-white">
           Amoo Halleluyah Olamilekan
         </h2>
-        <p className="font-semibold">Full-Stack Software Engineer</p>
+        <p className="font-semibold">
+          Full-Stack Software Engineer &amp; AI Agent Developer
+        </p>
         <p className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs">
           <a className="underline" href="mailto:amoohalleluyah1@gmail.com">
             amoohalleluyah1@gmail.com
@@ -411,8 +552,8 @@ function ResumeContent() {
       <section>
         <SectionHeading icon={User}>Profile</SectionHeading>
         <p>
-          Full-stack software engineer focused on building useful applications,
-          debugging software, and improving product quality.
+          Passionate about solving complex, real-world problems through robust
+          system architectures and modern AI developer tools.
         </p>
       </section>
 
@@ -440,14 +581,17 @@ function ResumeContent() {
       <section>
         <SectionHeading icon={Code2}>Technical Skills</SectionHeading>
         <p>
-          <strong>Frontend:</strong> React, Next.js, Angular
+          <strong>Frontend:</strong> React.js, Next.js, Angular, GraphQL,
+          Tailwind CSS
         </p>
         <p>
-          <strong>Backend & data:</strong> Node.js, Prisma, PostgreSQL,
-          GraphQL
+          <strong>Backend:</strong> Node.js, Express.js, PHP
         </p>
         <p>
-          <strong>AI:</strong> Claude API, CrewAI
+          <strong>Databases:</strong> PostgreSQL, Prisma, MongoDB
+        </p>
+        <p>
+          <strong>AI:</strong> Claude API, AI Agents, Supermaven
         </p>
       </section>
 
