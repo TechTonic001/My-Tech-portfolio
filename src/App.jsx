@@ -916,7 +916,7 @@ export default function App() {
       )}
 
       <footer className="absolute inset-x-0 bottom-0 z-[10001] flex h-[76px] w-full items-center border-t border-white/10 bg-black/40 px-2 shadow-2xl backdrop-blur-2xl">
-        <div className="absolute left-1/2 flex max-w-[calc(100%-190px)] -translate-x-1/2 items-center gap-1 overflow-x-auto sm:gap-2">
+        <div className="absolute left-1/2 flex max-w-[calc(100%-240px)] -translate-x-1/2 items-center gap-1 overflow-x-auto sm:max-w-[calc(100%-190px)] sm:gap-2">
           <button
             type="button"
             aria-expanded={startMenuOpen}
@@ -974,15 +974,15 @@ export default function App() {
             })}
           </nav>
         </div>
-        <div className="absolute right-3 flex items-center gap-2 sm:right-5 sm:gap-3">
-          <div className="flex items-center gap-2 text-slate-300 sm:gap-3">
-            <Wifi size={15} aria-label="Wi-Fi connected" />
-            <Volume2 size={15} aria-label="Volume on" />
-            <BatteryFull size={17} aria-label="Battery full" />
+        <div className="absolute right-3 flex items-center gap-1.5 sm:right-5 sm:gap-3">
+          <div className="flex items-center gap-1 text-slate-300 sm:gap-3">
+            <Wifi size={13} aria-label="Wi-Fi connected" />
+            <Volume2 size={13} aria-label="Volume on" />
+            <BatteryFull size={14} aria-label="Battery full" />
           </div>
-          <time className="flex min-w-16 flex-col items-end text-right text-[11px] font-medium leading-tight text-slate-200 sm:text-xs">
+          <time className="flex min-w-0 flex-col items-end text-right text-[10px] font-medium leading-tight text-slate-200 sm:min-w-16 sm:text-xs">
             <span>{formatTime(time)}</span>
-            <span className="mt-1 text-[10px] text-slate-400 sm:text-[11px]">
+            <span className="mt-1 text-[9px] text-slate-400 sm:text-[11px]">
               {formatDate(time)}
             </span>
           </time>
